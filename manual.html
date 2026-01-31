@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Universo gym</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .manual-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .manual-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        h4 {
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .manual-section {
+            scroll-margin-top: 2rem;
+        }
+
+        .btn-pdf {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 71, 87, 0.4);
+            color: white;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            .manual-card {
+                box-shadow: none;
+                border: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="manual-header">
+        <div class="container">
+            <img src="Logo negro.jpeg" alt="Logo"
+                style="height: 100px; margin-bottom: 1.5rem; border-radius: 15px; background: white; padding: 10px;">
+            <h1 class="display-4 fw-bold">Manual de Usuario</h1>
+            <p class="lead">Universo gym • Sistema de Gestión de Gimnasios</p>
+            <div class="mt-4 no-print">
+                <a href="Manual de Usuario - FitPro Elite.pdf" target="_blank" class="btn btn-pdf">
+                    <i class="fas fa-file-pdf me-2"></i>Descargar PDF Original
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-light rounded-pill ms-2 px-4 py-2">
+                    <i class="fas fa-print me-2"></i>Imprimir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-3 no-print">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="manual-card p-4">
+                        <h5 class="fw-bold mb-4">Contenido</h5>
+                        <nav class="nav flex-column">
+                            <a class="nav-link" href="#m-pasos"><i class="fas fa-rocket me-2"></i>Primeros Pasos</a>
+                            <a class="nav-link" href="#m-dashboard"><i class="fas fa-shapes me-2"></i>Dashboard</a>
+                            <a class="nav-link" href="#m-miembros"><i class="fas fa-users-cog me-2"></i>Miembros</a>
+                            <a class="nav-link" href="#m-pagos"><i class="fas fa-wallet me-2"></i>Pagos</a>
+                            <a class="nav-link" href="#m-ingresos"><i class="fas fa-id-card me-2"></i>Control de
+                                Acceso</a>
+                            <a class="nav-link" href="#m-clases"><i class="fas fa-dumbbell me-2"></i>Actividades</a>
+                            <a class="nav-link" href="#m-backup"><i class="fas fa-database me-2"></i>Seguridad</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="manual-card p-4 p-md-5">
+
+                    <div id="m-pasos" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-rocket"></i></span> 1. Primeros Pasos</h4>
+                        <p>Al abrir el sistema (<code>index.html</code>), verás una interfaz moderna y limpia diseñada
+                            para la eficiencia. La navegación principal se encuentra en la parte superior.</p>
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i>
+                                <strong>Navegación:</strong> Usa las pestañas superiores para moverte entre secciones.
+                            </li>
+                            <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i>
+                                <strong>Acceso Rápido:</strong> Botones rápidos para "Modo Acceso" e "Ingresos".
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div id="m-dashboard" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-shapes"></i></span> 2. Panel Principal</h4>
+                        <p>Visualiza el estado de tu gimnasio al instante con estadísticas actualizadas:</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded">
+                                    <h6 class="fw-bold"><i class="fas fa-users me-2 text-primary"></i>Miembros Activos
+                                    </h6>
+                                    <p class="small text-muted mb-0">Total de socios registrados actualmente.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded">
+                                    <h6 class="fw-bold"><i class="fas fa-dollar-sign me-2 text-success"></i>Ingresos del
+                                        Mes</h6>
+                                    <p class="small text-muted mb-0">Dinero total recaudado en el mes vigente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="m-miembros" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-users-cog"></i></span> 3. Miembros</h4>
+                        <p>Para registrar un socio, ve a "Miembros" y completa los datos (Nombre, DNI, Vencimiento). El
+                            sistema genera un ID automático.</p>
+                        <div class="alert alert-info border-0 shadow-sm">
+                            <i class="fas fa-lightbulb me-2"></i> Puedes buscar a cualquier miembro para editar sus
+                            datos o eliminarlo si es necesario.
+                        </div>
+                    </div>
+
+                    <div id="m-pagos" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-wallet"></i></span> 4. Pagos y Renovaciones</h4>
+                        <p>Registra ingresos de dinero vinculándolos al ID del socio.</p>
+                        <div class="card bg-light border-0 p-4 mb-3">
+                            <h5 class="fw-bold text-primary"><i class="fas fa-magic me-2"></i>Magia en Renovaciones</h5>
+                            <p class="mb-0">Al elegir el tipo pago <strong>"Mensualidad"</strong>, el sistema calcula
+                                solo:</p>
+                            <ul>
+                                <li>Si ya venció, suma 1 mes desde hoy.</li>
+                                <li>Si sigue activo, extiende 1 mes a partir de su vencimiento actual.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="m-ingresos" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-id-card"></i></span> 5. Control de Acceso</h4>
+                        <p>En "Buscar", ingresa el ID del socio para ver su estado:</p>
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="badge bg-success p-2">ACTIVA (VERDE)</div>
+                            <div class="badge bg-danger p-2">VENCIDA (ROJO)</div>
+                        </div>
+                        <p>Si está vencida, el sistema te alertará antes de permitir el ingreso.</p>
+                    </div>
+
+                    <div id="m-clases" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-dumbbell"></i></span> 6. Actividades</h4>
+                        <p>Define tus actividades (Yoga, Crossfit, etc.) y asigna socios a cada una para llevar un
+                            control de aforo.</p>
+                    </div>
+
+                    <div id="m-backup" class="manual-section mb-5">
+                        <h4><span class="section-icon"><i class="fas fa-database"></i></span> 7. Copias de Seguridad
+                        </h4>
+                        <div class="alert alert-danger border-0 shadow-sm">
+                            <h6 class="fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>ACCIÓN OBLIGATORIA</h6>
+                            <p class="mb-0">Los datos se guardan en tu navegador. Usa <strong>"Exportar JSON"</strong>
+                                cada semana y guarda el archivo en un lugar seguro (Google Drive, Pendrive).</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <p class="text-muted small">Universo gym v4.5 • Desarrollo Profesional</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

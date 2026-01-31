@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Centro de Formación Física</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="loguin..css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-overlay"></div>
+    <div class="login-container">
+        <header class="login-header">
+            <div class="logo-container-main mb-3">
+                <img src="logocff.png" alt="Logo">
+            </div>
+            <h1>Bienvenido</h1>
+            <p>Ingresa tu DNI para acceder</p>
+        </header>
+
+        <div class="display-container">
+            <input type="text" id="dniInput" placeholder="DNI" readonly class="dni-display">
+            <span class="cursor">|</span>
+        </div>
+
+        <div class="keypad">
+            <button class="key" onclick="appendNumber('1')">1</button>
+            <button class="key" onclick="appendNumber('2')">2</button>
+            <button class="key" onclick="appendNumber('3')">3</button>
+            <button class="key" onclick="appendNumber('4')">4</button>
+            <button class="key" onclick="appendNumber('5')">5</button>
+            <button class="key" onclick="appendNumber('6')">6</button>
+            <button class="key" onclick="appendNumber('7')">7</button>
+            <button class="key" onclick="appendNumber('8')">8</button>
+            <button class="key" onclick="appendNumber('9')">9</button>
+            <button class="key action-btn clear" onclick="clearInput()"><i class="fa-solid fa-trash"></i></button>
+            <button class="key" onclick="appendNumber('0')">0</button>
+            <button class="key action-btn backspace" onclick="backspace()"><i
+                    class="fa-solid fa-delete-left"></i></button>
+        </div>
+
+        <button class="submit-btn" onclick="submitLogin()">
+            INGRESAR <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        </button>
+
+        <p id="message-container" class="message hidden"></p>
+    </div>
+
+    <script src="loguin.script.js"></script>
+</body>
+
+</html>
