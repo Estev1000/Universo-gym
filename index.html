@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Universo gym - Sistema de Gestión de Gimnasio</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --dark-bg: #1a1d29;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Styles for Autocomplete Suggestions */
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestions-list li {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .suggestions-list li:hover {
+            background-color: #f0f4f8;
+            color: #667eea;
+        }
+
+        .suggestions-list li:last-child {
+            border-bottom: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 0;
+            overflow: visible;
+        }
+
+        .navbar-custom {
+            background: var(--dark-bg) !important;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .brand-icon {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 10px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .dashboard-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-subtitle {
+            font-weight: 300;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-cards {
+            padding: 2rem;
+            background: #f8fafc;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs-custom {
+            border: none;
+            background: white;
+            padding: 0 2rem;
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            border-radius: 0;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: #667eea;
+            background: transparent;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: #667eea;
+            background: transparent;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content-custom {
+            padding: 2rem;
+            background: white;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #667eea;
+            color: #667eea;
+            background: transparent;
+        }
+
+        .btn-outline-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-premium {
+            background: var(--gold-gradient);
+            color: #5c3a00;
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 4px 15px rgba(253, 185, 49, 0.4);
+            animation: pulse-gold 2s infinite;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(253, 185, 49, 0.6);
+            color: #5c3a00;
+        }
+
+        @keyframes pulse-gold {
+            0% {
+                box-shadow: 0 0 0 0 rgba(253, 185, 49, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(253, 185, 49, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(253, 185, 49, 0);
+            }
+        }
+
+
+
+        .table-custom {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            font-size: 0.9rem;
+        }
+
+        .table-custom thead {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .table-custom th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table-custom td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Contenedor scrollable para tablas en pantallas pequeñas */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Ajustes para pantallas muy pequeñas */
+        @media (max-width: 768px) {
+            .table-custom {
+                font-size: 0.75rem;
+            }
+
+            .table-custom th {
+                font-size: 0.65rem;
+                padding: 0.5rem 0.3rem;
+            }
+
+            .table-custom td {
+                padding: 0.5rem 0.3rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.65rem;
+            }
+
+            .table-custom i {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .table-custom {
+                font-size: 0.7rem;
+            }
+
+            .table-custom th {
+                font-size: 0.6rem;
+                padding: 0.4rem 0.2rem;
+            }
+
+            .table-custom td {
+                padding: 0.4rem 0.2rem;
+                font-size: 0.7rem;
+            }
+
+            .btn-sm {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.6rem;
+            }
+        }
+
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        .user-info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #667eea;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .stats-cards {
+                padding: 1rem;
+            }
+
+            .nav-tabs-custom .nav-link {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Overlay -->
+    <div id="loginContainer"
+        class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-dark bg-opacity-75 d-none"
+        style="z-index:1050;">
+        <div class="card p-4" style="min-width:320px; max-width:90%;">
+            <h4 class="mb-3 text-center"><i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión</h4>
+            <form id="formLogin" class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Usuario</label>
+                    <input id="login_user" class="form-control" placeholder="Nombre de usuario">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Contraseña</label>
+                    <input id="login_pass" type="password" class="form-control" placeholder="Contraseña">
+                </div>
+                <div class="col-12 d-grid gap-2">
+                    <button type="submit" class="btn btn-primary-custom btn-custom mt-2">Acceder</button>
+                    <div class="form-text text-center mt-2">
+                        <small>
+                            <span class="d-block text-muted">Credenciales de acceso:</span>
+                            Dueño: <strong>Universo gym</strong> / <strong>Gonzalo Ariel Torales</strong><br>
+                            Empleado: <strong>empleado</strong> / <strong>(sin contraseña)</strong>
+                        </small>
+                        <hr>
+                        <button type="button" class="btn btn-link btn-sm text-decoration-none"
+                            onclick="document.getElementById('loginContainer').classList.add('d-none'); document.getElementById('manual-tab').click();">
+                            <i class="fas fa-book-open me-1"></i>¿Cómo usar el sistema? Ver Manual
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark navbar-custom">
+            <div class="container-fluid">
+                <span class="navbar-brand">
+                    <img src="Logo blanco.jpeg" alt="Logo" class="brand-logo">
+                    Universo gym
+                </span>
+                <div class="d-flex">
+                    <span class="text-light me-3">
+                        <i class="fas fa-user-circle me-1"></i>
+                        Admin
+                    </span>
+
+                    <a href="loguin.html" target="_blank" class="btn btn-sm btn-outline-warning me-2">
+                        <i class="fas fa-key me-1"></i>Modo Acceso
+                    </a>
+                    <a href="ingresos.html" target="_blank" class="btn btn-sm btn-outline-light me-2"><i
+                            class="fas fa-door-open me-1"></i>Ingresos</a>
+                    <button id="btnLogout" class="btn btn-sm btn-outline-danger me-2 d-none">
+                        <i class="fas fa-sign-out-alt me-1"></i>Salir
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" onclick="openSupportModal()">
+                        <i class="fas fa-headset me-1"></i>Soporte
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-chart-line me-3"></i>
+                Gestión - Universo gym
+            </h1>
+            <p class="dashboard-subtitle">Software de administración profesional • Comprado en Mercado Libre</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-gradient);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number" id="totalUsuarios">0</div>
+                        <div class="stat-label">Miembros Activos</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-none">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-number" id="totalIngresos">$0</div>
+                        <div class="stat-label">Ingresos del Mes</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-gradient);">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="stat-number" id="totalClases">0</div>
+                        <div class="stat-label">Actividades Disponibles</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-number" id="totalInscripciones">0</div>
+                        <div class="stat-label">Inscripciones Hoy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs nav-tabs-custom" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios"
+                    type="button" role="tab">
+                    <i class="fas fa-users me-2"></i>Miembros
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pagos-tab" data-bs-toggle="tab" data-bs-target="#pagos" type="button"
+                    role="tab">
+                    <i class="fas fa-credit-card me-2"></i>Pagos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="buscar-tab" data-bs-toggle="tab" data-bs-target="#buscar" type="button"
+                    role="tab">
+                    <i class="fas fa-search me-2"></i>Buscar
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="clases-usuario-tab" data-bs-toggle="tab" data-bs-target="#clases-usuario"
+                    type="button" role="tab">
+                    <i class="fas fa-user-plus me-2"></i>Inscripciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="clases-tab" data-bs-toggle="tab" data-bs-target="#clases" type="button"
+                    role="tab">
+                    <i class="fas fa-dumbbell me-2"></i>Actividades
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="ingresos.html" target="_blank" role="tab">
+                    <i class="fas fa-door-open me-2"></i>Ingresos
+                </a>
+            </li>
+            <!-- Manual de Usuario -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button"
+                    role="tab">
+                    <i class="fas fa-book-open me-2"></i>Manual
+                </button>
+            </li>
+            <!-- Visible solo para ADMIN / DUEÑO -->
+            <li class="nav-item d-none" role="presentation" id="liIngresosMes">
+                <a class="nav-link" href="ingresos_mes.html" target="_blank" id="btnIngresosMes" role="tab">
+                    <i class="fas fa-sack-dollar me-2"></i>Ingresos Mes
+                </a>
+            </li>
+        </ul>
+        <!-- Tab Content -->
+        <div class="tab-content tab-content-custom" id="mainTabsContent">
+            <!-- Miembros -->
+            <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+                <div class="section-title">Gestión de Miembros</div>
+
+                <div class="form-card mb-4">
+                    <h5 class="mb-3"><i class="fas fa-user-plus me-2"></i>Agregar Nuevo Miembro</h5>
+                    <form id="formAgregarUsuario" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input id="nombre" name="nombre" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Apellido</label>
+                            <input id="apellido" name="apellido" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono</label>
+                            <input id="telefono" name="telefono" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input id="email" name="email" type="email" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Vencimiento</label>
+                            <input id="fecha_vencimiento" name="fecha_vencimiento" type="date" class="form-control"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">DNI</label>
+                            <input id="dni" name="dni" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Dirección</label>
+                            <input id="direccion" name="direccion" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input id="fecha_nacimiento" name="fecha_nacimiento" type="date" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Grupo Sanguíneo <span class="text-muted">(requerido por
+                                    seguro)</span></label>
+                            <select id="grupo_sanguineo" name="grupo_sanguineo" class="form-control">
+                                <option value="">Seleccionar...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary-custom btn-custom me-2">
+                                <i class="fas fa-plus me-2"></i>Agregar Miembro
+                            </button>
+                            <button type="button" id="btnMostrarUsuarios" class="btn btn-outline-custom btn-custom">
+                                <i class="fas fa-list me-2"></i>Ver Todos
+                            </button>
+                            <button type="button" id="btnExportarDatos" class="btn btn-outline-success btn-custom ms-2">
+                                <i class="fas fa-download me-2"></i>Exportar JSON
+                            </button>
+                            <label for="inputImportarDatos" class="btn btn-outline-primary btn-custom ms-2 mb-0">
+                                <i class="fas fa-upload me-2"></i>Importar JSON
+                                <input type="file" id="inputImportarDatos" accept="application/json"
+                                    style="display:none;">
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tablaUsuariosContainer" class="d-none">
+                    <h5 class="mb-3"><i class="fas fa-users me-2"></i>Lista de Miembros</h5>
+                    <div class="table-responsive">
+                        <table id="tablaUsuarios" class="table table-custom text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Vencimiento</th>
+                                    <th>DNI</th>
+                                    <th>Dirección</th>
+                                    <th>F. Nacimiento</th>
+                                    <th>Grupo Sang.</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagos -->
+            <div class="tab-pane fade" id="pagos" role="tabpanel">
+                <div class="section-title">Gestión de Pagos</div>
+
+                <div class="form-card mb-4">
+                    <h5 class="mb-3"><i class="fas fa-credit-card me-2"></i>Registrar Nuevo Pago</h5>
+                    <form id="formRegistrarPago" class="row g-3">
+                        <div class="col-md-6 position-relative">
+                            <label class="form-label">ID, DNI, Nombre o Apellido</label>
+                            <input id="usuario_pago" name="usuario_id" type="text" class="form-control"
+                                autocomplete="off" required placeholder="Ej: 1, 12345678 o Juan">
+                            <ul id="listaSugerenciasPagos" class="suggestions-list d-none"></ul>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha</label>
+                            <input id="fecha_pago" name="fecha" type="date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Monto</label>
+                            <input id="monto_pago" name="monto" type="number" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Pago</label>
+                            <select id="tipo_pago" name="tipo" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Mensualidad">Mensualidad</option>
+                                <option value="Inscripción">Inscripción</option>
+                                <option value="Personal Training">Personal Training</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estado</label>
+                            <select id="estado_pago" name="estado" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Pagado (Completo)">Pagado (Completo)</option>
+                                <option value="Pendiente (Saldo / Fiado)">Pendiente (Saldo / Fiado)</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Observaciones</label>
+                            <textarea id="observaciones_pago" name="observaciones" class="form-control" rows="2"
+                                placeholder="Ej: Restan $5000"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary-custom btn-custom me-2">
+                                <i class="fas fa-plus me-2"></i>Registrar Pago
+                            </button>
+                            <button type="button" id="btnMostrarPagos" class="btn btn-outline-custom btn-custom">
+                                <i class="fas fa-list me-2"></i>Ver Historial
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tablaPagosContainer" class="d-none">
+                    <h5 class="mb-3"><i class="fas fa-history me-2"></i>Historial de Pagos</h5>
+                    <div class="table-responsive">
+                        <table id="tablaPagos" class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Miembro ID</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Observaciones</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buscar Usuario -->
+            <div class="tab-pane fade" id="buscar" role="tabpanel">
+                <div class="section-title">Buscar Miembro</div>
+
+                <div class="form-card mb-4">
+                    <h5 class="mb-3"><i class="fas fa-search me-2"></i>Buscar Miembro</h5>
+                    <form id="formBuscarUsuario" class="row g-3">
+                        <div class="col-md-8 position-relative">
+                            <label class="form-label">DNI, Nombre o ID del Miembro</label>
+                            <input id="usuario_id_buscar" type="text" class="form-control" autocomplete="off"
+                                placeholder="Ingresa DNI, Apellido o ID..." required>
+                            <ul id="listaSugerenciasBuscar" class="suggestions-list d-none"></ul>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary-custom btn-custom">
+                                <i class="fas fa-search me-2"></i>Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="infoUsuario" class="mt-3"></div>
+                <div class="mt-3 d-none" id="ingresoContainer">
+                    <button id="btnRegistrarIngreso" class="btn btn-success btn-custom">
+                        <i class="fas fa-door-open me-2"></i>Registrar Ingreso
+                    </button>
+                    <button type="button" id="btnMostrarIngresos" class="btn btn-outline-custom btn-custom ms-2">
+                        <i class="fas fa-history me-2"></i>Historial
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inscripciones -->
+            <div class="tab-pane fade" id="clases-usuario" role="tabpanel">
+                <div class="section-title">Inscripciones a Actividades</div>
+
+                <div class="form-card mb-4">
+                    <h5 class="mb-3"><i class="fas fa-user-plus me-2"></i>Inscribir Miembro</h5>
+                    <form id="formClasesUsuario" class="row g-3">
+                        <div class="col-md-6 position-relative">
+                            <label class="form-label">ID, DNI, Nombre o Apellido</label>
+                            <input id="usuario_clase" type="text" class="form-control" autocomplete="off" required
+                                placeholder="Ej: 1, 12345678 o Juan">
+                            <ul id="listaSugerenciasClases" class="suggestions-list d-none"></ul>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Actividad</label>
+                            <select id="nombre_clase_usuario" class="form-control" required></select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary-custom btn-custom me-2">
+                                <i class="fas fa-plus me-2"></i>Inscribir
+                            </button>
+                            <button type="button" id="btnMostrarClasesUsuario"
+                                class="btn btn-outline-custom btn-custom">
+                                <i class="fas fa-list me-2"></i>Ver Actividades del Miembro
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="listaClasesUsuarioContainer" class="d-none">
+                    <h5 class="mb-3"><i class="fas fa-dumbbell me-2"></i>Actividades del Miembro</h5>
+                    <ul id="listaClasesUsuario" class="list-group"></ul>
+                </div>
+            </div>
+
+            <!-- Actividades -->
+            <div class="tab-pane fade" id="clases" role="tabpanel">
+                <div class="section-title">Gestión de Actividades</div>
+
+                <div class="form-card mb-4">
+                    <h5 class="mb-3"><i class="fas fa-plus-circle me-2"></i>Crear Nueva Actividad</h5>
+                    <form id="formRegistrarClase" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre de la Actividad</label>
+                            <input id="nombre_clase" name="nombre" class="form-control" required
+                                placeholder="Ej: Yoga, Crossfit...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Horario</label>
+                            <input id="horario_clase" name="horario" class="form-control" required
+                                placeholder="Ej: Lun y Mie 18:00hs">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="descripcion_clase" name="descripcion" class="form-control"
+                                rows="2"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary-custom btn-custom me-2">
+                                <i class="fas fa-save me-2"></i>Crear Actividad
+                            </button>
+                            <button type="button" id="btnMostrarClases" class="btn btn-outline-custom btn-custom">
+                                <i class="fas fa-list me-2"></i>Ver Todas las Actividades
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tablaClasesContainer" class="d-none">
+                    <h5 class="mb-3"><i class="fas fa-dumbbell me-2"></i>Actividades Disponibles</h5>
+                    <div class="table-responsive">
+                        <table id="tablaClases" class="table table-custom w-100">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Horario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual de Usuario Content -->
+            <div class="tab-pane fade" id="manual" role="tabpanel">
+                <div class="section-title">Manual de Usuario - Universo gym</div>
+
+                <div class="row">
+                    <div class="col-lg-3 d-none d-lg-block">
+                        <div class="list-group sticky-top" style="top: 20px; z-index: 10;">
+                            <a href="#m-intro" class="list-group-item list-group-item-action">Introducción</a>
+                            <a href="#m-pasos" class="list-group-item list-group-item-action">Primeros Pasos</a>
+                            <a href="#m-dashboard" class="list-group-item list-group-item-action">Dashboard</a>
+                            <a href="#m-miembros" class="list-group-item list-group-item-action">Miembros</a>
+                            <a href="#m-pagos" class="list-group-item list-group-item-action">Pagos y Renovaciones</a>
+                            <a href="#m-ingresos" class="list-group-item list-group-item-action">Control de Acceso</a>
+                            <a href="#m-clases" class="list-group-item list-group-item-action">Gestión de
+                                Actividades</a>
+                            <a href="#m-backup" class="list-group-item list-group-item-action">Copias de Seguridad</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="manual-content p-4 bg-light rounded-3 shadow-sm">
+                            <div class="text-center mb-5">
+                                <img src="Logo negro.jpeg" alt="Logo" class="img-fluid mb-3" style="max-height: 80px;">
+                                <h2 id="m-intro" class="fw-bold">Universo gym: Sistema de Gestión</h2>
+                                <p class="text-muted">Guía completa para la administración profesional de tu gimnasio.
+                                </p>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="Manual de Usuario - FitPro Elite.pdf" target="_blank"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fas fa-file-pdf me-2"></i>Descargar PDF
+                                    </a>
+                                    <a href="manual.html" target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-external-link-alt me-2"></i>Ver en Pantalla Completa
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-pasos">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-rocket me-2"></i>1.
+                                    Primeros Pasos</h4>
+                                <p>Al abrir el sistema (<code>index.html</code>), verás una interfaz moderna y limpia
+                                    diseñada para la eficiencia.</p>
+                                <ul>
+                                    <li><strong>Navegación:</strong> Usa las pestañas superiores (Miembros, Pagos,
+                                        Buscar, Actividades) para moverte por las distintas secciones.</li>
+                                    <li><strong>Acceso Rápido:</strong> En la barra superior tienes botones para
+                                        <strong>"Modo Acceso"</strong> (para que los socios pongan su DNI) e
+                                        <strong>"Ingresos"</strong> (para ver quién entra).
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-dashboard">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-shapes me-2"></i>2. Panel
+                                    Principal (Dashboard)</h4>
+                                <p>Nada más entrar, verás tarjetas con estadísticas clave que se actualizan en tiempo
+                                    real:</p>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="card bg-white p-3 border-0 shadow-sm h-100">
+                                            <h6 class="fw-bold text-primary">Miembros Activos</h6>
+                                            <small class="text-muted">Total de socios registrados en el sistema.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card bg-white p-3 border-0 shadow-sm h-100">
+                                            <h6 class="fw-bold text-success">Ingresos del Mes</h6>
+                                            <small class="text-muted">Suma total de dinero recaudado en el mes
+                                                actual.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-miembros">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-users-cog me-2"></i>3.
+                                    Gestión de Miembros</h4>
+                                <p>Administra tu base de clientes desde la pestaña <strong>"Miembros"</strong>.</p>
+                                <div class="alert alert-info border-0 shadow-sm">
+                                    <strong>Agregar un Miembro:</strong> Rellena Nombre, Apellido, Teléfono, Email, DNI
+                                    y Fecha de Vencimiento. El sistema asignará un <strong>ID único</strong>
+                                    automáticamente.
+                                </div>
+                                <p>Usa el botón <strong>"Ver Todos"</strong> para listar, editar (icono azul) o eliminar
+                                    (icono rojo) socios.</p>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-pagos">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-wallet me-2"></i>4. Gestión
+                                    de Pagos y Renovaciones</h4>
+                                <p>La sección más importante para tu flujo de caja.</p>
+                                <div class="card border-primary mb-3 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary fw-bold"><i
+                                                class="fas fa-magic me-2"></i>Renovación Automática</h5>
+                                        <p class="card-text">Si registras un pago de tipo
+                                            <strong>"Mensualidad"</strong>:
+                                        </p>
+                                        <ul>
+                                            <li><strong>Si ya venció:</strong> Sumará 1 mes desde el día de hoy.</li>
+                                            <li><strong>Si está activo:</strong> Sumará 1 mes a su fecha actual de
+                                                vencimiento.</li>
+                                        </ul>
+                                        <p class="small text-muted mb-0">¡No necesitas editar la fecha manualmente!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-ingresos">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-id-card me-2"></i>5.
+                                    Control de Acceso (Ingresos)</h4>
+                                <p>Verifica si un socio puede entrar:</p>
+                                <ol>
+                                    <li>Busca al socio por su ID en la pestaña <strong>"Buscar"</strong>.</li>
+                                    <li>Verás una etiqueta: <strong>VERDE (ACTIVA)</strong> o <strong>ROJA
+                                            (VENCIDA)</strong>.</li>
+                                    <li>Pulsa <strong>"Registrar Ingreso"</strong> para guardar la entrada.</li>
+                                </ol>
+                                <div class="alert alert-warning border-0 shadow-sm">
+                                    <strong>Nota:</strong> Si alguien está vencido, el sistema te preguntará si deseas
+                                    permitir un "Ingreso Excepcional".
+                                </div>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-clases">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-dumbbell me-2"></i>6.
+                                    Gestión de Actividades</h4>
+                                <p>Organiza tus actividades grupales:</p>
+                                <ul>
+                                    <li>Crea actividades con nombre, descripción y horario.</li>
+                                    <li>Inscribe socios asociando su ID a una actividad específica.</li>
+                                    <li>Controla el aforo y asistencia fácilmente.</li>
+                                </ul>
+                            </div>
+
+                            <div class="manual-section mb-5" id="m-backup">
+                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-database me-2"></i>7.
+                                    Copias de Seguridad</h4>
+                                <p class="text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> ¡MUY
+                                    IMPORTANTE!</p>
+                                <p>Tus datos se guardan localmente en el navegador. Para no perderlos:</p>
+                                <ol>
+                                    <li>Usa el botón <strong>"Exportar JSON"</strong> regularmente.</li>
+                                    <li>Guarda el archivo descargado en la nube o un pendrive.</li>
+                                    <li>Si cambias de PC, usa <strong>"Importar JSON"</strong> para restaurar todo.</li>
+                                </ol>
+                            </div>
+
+                            <div class="text-center mt-5 pt-4 border-top">
+                                <p class="text-muted">¿Necesitás más ayuda?</p>
+                                <button class="btn btn-primary-custom btn-custom" onclick="openSupportModal()">
+                                    <i class="fas fa-headset me-2"></i>Contactar Soporte
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery debe cargarse antes de DataTables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Placeholder para lógica JS -->
+    <script>
+        // SISTEMA DE ALMACENAMIENTO LOCAL
+        class GymStorage {
+            constructor() {
+                this.initializeData();
+            }
+
+            initializeData() {
+                if (!localStorage.getItem('gym_usuarios')) {
+                    localStorage.setItem('gym_usuarios', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('gym_pagos')) {
+                    localStorage.setItem('gym_pagos', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('gym_clases')) {
+                    localStorage.setItem('gym_clases', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('gym_inscripciones')) {
+                    localStorage.setItem('gym_inscripciones', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('gym_next_id')) {
+                    localStorage.setItem('gym_next_id', '1');
+                }
+            }
+
+            getNextId() {
+                const id = parseInt(localStorage.getItem('gym_next_id'));
+                localStorage.setItem('gym_next_id', (id + 1).toString());
+                return id;
+            }
+
+            // USUARIOS
+            getUsuarios() {
+                return JSON.parse(localStorage.getItem('gym_usuarios') || '[]');
+            }
+
+            addUsuario(usuario) {
+                const usuarios = this.getUsuarios();
+
+                usuario.id = this.getNextId();
+                usuarios.push(usuario);
+                localStorage.setItem('gym_usuarios', JSON.stringify(usuarios));
+                return usuario;
+            }
+
+            getUsuario(id) {
+                const usuarios = this.getUsuarios();
+                return usuarios.find(u => u.id === parseInt(id));
+            }
+
+            deleteUsuario(id) {
+                const usuarios = this.getUsuarios();
+                const filtered = usuarios.filter(u => u.id !== parseInt(id));
+                localStorage.setItem('gym_usuarios', JSON.stringify(filtered));
+            }
+
+            // PAGOS
+            getPagos() {
+                return JSON.parse(localStorage.getItem('gym_pagos') || '[]');
+            }
+
+            getPago(id) {
+                const pagos = this.getPagos();
+                return pagos.find(p => p.id === parseInt(id));
+            }
+
+            addPago(pago) {
+                const pagos = this.getPagos();
+                pago.id = this.getNextId();
+                pagos.push(pago);
+                localStorage.setItem('gym_pagos', JSON.stringify(pagos));
+                if (pago && pago.usuario_id != null) {
+                    this.recalcularVencimientoUsuario(pago.usuario_id);
+                }
+                return pago;
+            }
+
+            updatePago(id, data) {
+                const pagoExistente = this.getPago(id);
+                let pagos = this.getPagos();
+                pagos = pagos.map(p => {
+                    if (p.id === parseInt(id)) {
+                        return { ...p, ...data, id: parseInt(id) };
+                    }
+                    return p;
+                });
+                localStorage.setItem('gym_pagos', JSON.stringify(pagos));
+
+                if (pagoExistente && pagoExistente.usuario_id != null) {
+                    this.recalcularVencimientoUsuario(pagoExistente.usuario_id);
+                }
+                if (data && data.usuario_id != null && (!pagoExistente || parseInt(data.usuario_id) !== parseInt(pagoExistente.usuario_id))) {
+                    this.recalcularVencimientoUsuario(data.usuario_id);
+                }
+            }
+
+            deletePago(id) {
+                const pagoExistente = this.getPago(id);
+                let pagos = this.getPagos();
+                pagos = pagos.filter(p => p.id !== parseInt(id));
+                localStorage.setItem('gym_pagos', JSON.stringify(pagos));
+
+                if (pagoExistente && pagoExistente.usuario_id != null) {
+                    this.recalcularVencimientoUsuario(pagoExistente.usuario_id);
+                }
+            }
+
+            esPagoMensualidadValido(pago) {
+                if (!pago || pago.tipo !== 'Mensualidad') return false;
+                if (!pago.fecha) return false;
+                if (!pago.estado) return true;
+                return String(pago.estado).toLowerCase().includes('pagado');
+            }
+
+            recalcularVencimientoUsuario(usuarioId) {
+                const usuario = this.getUsuario(usuarioId);
+                if (!usuario) return;
+
+                const pagos = this.getPagos()
+                    .filter(p => parseInt(p.usuario_id) === parseInt(usuarioId))
+                    .filter(p => this.esPagoMensualidadValido(p))
+                    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                if (pagos.length === 0) {
+                    this.updateUsuario(usuarioId, { fecha_vencimiento: '' });
+                    return;
+                }
+
+                let vencimiento = null;
+                for (const p of pagos) {
+                    const fechaPago = new Date(p.fecha + 'T12:00:00');
+                    if (!vencimiento) {
+                        vencimiento = new Date(fechaPago);
+                    } else if (fechaPago > vencimiento) {
+                        vencimiento = new Date(fechaPago);
+                    }
+                    vencimiento.setMonth(vencimiento.getMonth() + 1);
+                }
+
+                const nuevaFechaStr = vencimiento.toISOString().split('T')[0];
+                this.updateUsuario(usuarioId, { fecha_vencimiento: nuevaFechaStr });
+            }
+
+            // CLASES
+            getClases() {
+                return JSON.parse(localStorage.getItem('gym_clases') || '[]');
+            }
+
+            getClase(id) {
+                const clases = this.getClases();
+                return clases.find(c => c.id === parseInt(id));
+            }
+
+            addClase(clase) {
+                const clases = this.getClases();
+                clase.id = this.getNextId();
+                clases.push(clase);
+                localStorage.setItem('gym_clases', JSON.stringify(clases));
+                return clase;
+            }
+
+            updateClase(id, data) {
+                let clases = this.getClases();
+                clases = clases.map(clase => {
+                    if (clase.id === parseInt(id)) {
+                        return { ...clase, ...data, id: parseInt(id) };
+                    }
+                    return clase;
+                });
+                localStorage.setItem('gym_clases', JSON.stringify(clases));
+            }
+
+            deleteClase(id) {
+                let clases = this.getClases();
+                clases = clases.filter(clase => clase.id !== parseInt(id));
+                localStorage.setItem('gym_clases', JSON.stringify(clases));
+            }
+
+            // INSCRIPCIONES
+            getInscripciones() {
+                return JSON.parse(localStorage.getItem('gym_inscripciones') || '[]');
+            }
+
+            addInscripcion(inscripcion) {
+                const inscripciones = this.getInscripciones();
+                inscripcion.id = this.getNextId();
+                inscripciones.push(inscripcion);
+                localStorage.setItem('gym_inscripciones', JSON.stringify(inscripciones));
+                return inscripcion;
+            }
+
+            deleteInscripcion(id) {
+                let inscripciones = this.getInscripciones();
+                inscripciones = inscripciones.filter(i => i.id !== parseInt(id));
+                localStorage.setItem('gym_inscripciones', JSON.stringify(inscripciones));
+            }
+
+            deleteInscripcionByUserAndClass(usuarioId, claseId) {
+                let inscripciones = this.getInscripciones();
+                inscripciones = inscripciones.filter(i => i.usuario_id !== parseInt(usuarioId) || i.clase_id !== parseInt(claseId));
+                localStorage.setItem('gym_inscripciones', JSON.stringify(inscripciones));
+            }
+
+            getClasesUsuario(usuarioId) {
+                const inscripciones = this.getInscripciones();
+                const clases = this.getClases();
+                const clasesUsuario = inscripciones
+                    .filter(i => i.usuario_id === parseInt(usuarioId))
+                    .map(i => clases.find(c => c.id === i.clase_id))
+                    .filter(c => c);
+                return clasesUsuario;
+            }
+
+            // ===== Exportar / Importar =====
+            exportAllData() {
+                return {
+                    usuarios: this.getUsuarios(),
+                    pagos: this.getPagos(),
+                    clases: this.getClases(),
+                    inscripciones: this.getInscripciones(),
+                    ingresos: this.getIngresos ? this.getIngresos() : JSON.parse(localStorage.getItem('gym_ingresos') || '[]')
+                };
+            }
+
+            importAllData(data) {
+                if (data.usuarios) localStorage.setItem('gym_usuarios', JSON.stringify(data.usuarios));
+                if (data.pagos) localStorage.setItem('gym_pagos', JSON.stringify(data.pagos));
+                if (data.clases) localStorage.setItem('gym_clases', JSON.stringify(data.clases));
+                if (data.inscripciones) localStorage.setItem('gym_inscripciones', JSON.stringify(data.inscripciones));
+                if (data.ingresos) localStorage.setItem('gym_ingresos', JSON.stringify(data.ingresos));
+
+                const allIds = [
+                    ...(data.usuarios?.map(u => u.id) || []),
+                    ...(data.pagos?.map(p => p.id) || []),
+                    ...(data.clases?.map(c => c.id) || []),
+                    ...(data.inscripciones?.map(i => i.id) || []),
+                    ...(data.ingresos?.map(i => i.id) || [])
+                ];
+                const next = allIds.length ? Math.max(...allIds) + 1 : 1;
+                localStorage.setItem('gym_next_id', next.toString());
+            }
+        }
+
+        const storage = new GymStorage();
+
+        // Utilidades
+        function populateClaseOptions() {
+            const select = document.getElementById('nombre_clase_usuario');
+            if (!select) return;
+            const clases = storage.getClases();
+            select.innerHTML = clases.length === 0 ? '<option value="" disabled selected>No hay clases registradas</option>' : '';
+            clases.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = `${c.nombre} - ${c.horario}`;
+                select.appendChild(option);
+            });
+        }
+
+        function showContainer(id) {
+            document.getElementById(id).classList.remove("d-none");
+        }
+
+        function hideContainer(id) {
+            document.getElementById(id).classList.add("d-none");
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+            document.body.insertBefore(alertDiv, document.body.firstChild);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const usuarios = storage.getUsuarios();
+            const pagos = storage.getPagos();
+            const clases = storage.getClases();
+
+            // Filtrar usuarios activos (vencimiento >= hoy)
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const usuariosActivos = usuarios.filter(u => {
+                if (!u.fecha_vencimiento) return false;
+                const vencimiento = new Date(u.fecha_vencimiento + 'T23:59:59');
+                return vencimiento >= hoy;
+            });
+
+            document.getElementById('totalUsuarios').textContent = usuariosActivos.length;
+            document.getElementById('totalClases').textContent = clases.length;
+
+            // Calcular ingresos del mes actual
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthlyIncome = pagos
+                .filter(p => {
+                    const payDate = new Date(p.fecha);
+                    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear;
+                })
+                .reduce((sum, p) => sum + parseFloat(p.monto), 0);
+
+            // Ocultar monto para empleados
+            const role = localStorage.getItem('gym_role');
+            if (role === 'owner') {
+                document.getElementById('totalIngresos').textContent = '$' + monthlyIncome.toFixed(2);
+                document.getElementById('totalIngresos').classList.remove('text-muted');
+                document.getElementById('totalIngresos').classList.add('text-success');
+                // Mostrar botón de Ingresos Mes
+                const liIngresos = document.getElementById('liIngresosMes');
+                if (liIngresos) liIngresos.classList.remove('d-none');
+            } else {
+                document.getElementById('totalIngresos').textContent = '**** (Solo Dueños)';
+                document.getElementById('totalIngresos').classList.add('text-muted');
+                document.getElementById('totalIngresos').classList.remove('text-success');
+                // Ocultar botón de Ingresos Mes
+                const liIngresos = document.getElementById('liIngresosMes');
+                if (liIngresos) liIngresos.classList.add('d-none');
+            }
+
+            document.getElementById('totalInscripciones').textContent = storage.getInscripciones().length;
+        }
+
+        // Inicialización
+        $(document).ready(function () {
+            // ---- LOGIN HANDLING ----
+            function showLogin() {
+                $('#loginContainer').removeClass('d-none');
+                $('#btnLogout').addClass('d-none');
+                // Bloquear scroll
+                $('body').css('overflow', 'hidden');
+            }
+
+            function hideLogin() {
+                $('#loginContainer').addClass('d-none');
+                $('#btnLogout').removeClass('d-none');
+                // Habilitar scroll
+                $('body').css('overflow', 'auto');
+            }
+
+            // Mostrar u ocultar login según estado almacenado
+            if (localStorage.getItem('gym_loggedIn') === 'true') {
+                hideLogin();
+            } else {
+                showLogin();
+            }
+
+            // Validar formulario de inicio de sesión
+            $('#formLogin').on('submit', function (e) {
+                e.preventDefault();
+                const user = $('#login_user').val().trim();
+                const pass = $('#login_pass').val().trim();
+
+                // 1. LOGIN DE DUEÑO (ADMIN)
+                if (user === 'gimnasiocff' && pass === 'lorenzo') {
+                    localStorage.setItem('gym_loggedIn', 'true');
+                    localStorage.setItem('gym_role', 'owner');
+                    hideLogin();
+                    showAlert('Bienvenido, Dueño. Acceso Total.', 'success');
+                    updateStats();
+                }
+                // 2. LOGIN DE EMPLEADO (Puede ser 'empleado' o simplemente vacío/cualquier cosa si no es el dueño)
+                else if (user === 'empleado' || (user === '' && pass === '')) {
+                    localStorage.setItem('gym_loggedIn', 'true');
+                    localStorage.setItem('gym_role', 'employee');
+                    hideLogin();
+                    showAlert('Bienvenido, Empleado. Acceso Limitado.', 'info');
+                    updateStats();
+                }
+                else {
+                    showAlert('Credenciales incorrectas. Para empleado puede dejar los campos vacíos.', 'danger');
+                }
+            });
+
+            // Cerrar sesión
+            $('#btnLogout').click(function () {
+                if (confirm('¿Seguro que deseas cerrar sesión?')) {
+                    localStorage.removeItem('gym_loggedIn');
+                    localStorage.removeItem('gym_role');
+                    showLogin();
+                    window.location.reload(); // Recargar para limpiar estados visuales
+                }
+            });
+            // ---- END LOGIN ----
+
+            // Cargar datos de ejemplo si es la primera vez
+            if (storage.getUsuarios().length === 0) {
+                // Limpiar localStorage y agregar datos de ejemplo
+                localStorage.setItem('gym_usuarios', JSON.stringify([]));
+                localStorage.setItem('gym_pagos', JSON.stringify([]));
+                localStorage.setItem('gym_clases', JSON.stringify([]));
+                localStorage.setItem('gym_inscripciones', JSON.stringify([]));
+                localStorage.setItem('gym_next_id', '1');
+                storage.addUsuario({
+                    nombre: 'Juan',
+                    apellido: 'P\u00e9rez',
+                    telefono: '123-456-7890',
+                    email: 'juan@email.com',
+                    fecha_vencimiento: '2024-12-31',
+                    dni: '12345678',
+                    direccion: 'Av. Ejemplo 123',
+                    fecha_nacimiento: '1990-05-15',
+                    grupo_sanguineo: 'O+'
+                });
+
+                storage.addClase({
+                    nombre: 'Yoga',
+                    descripcion: 'Clase de yoga para principiantes',
+                    horario: 'Lunes y Miércoles 18:00'
+                });
+
+                storage.addClase({
+                    nombre: 'CrossFit',
+                    descripcion: 'Entrenamiento funcional de alta intensidad',
+                    horario: 'Martes y Jueves 19:00'
+                });
+            }
+
+            // Cargar clases en selector
+            populateClaseOptions();
+            // Actualizar estadísticas al cargar
+            updateStats();
+
+            // DataTables para usuarios
+            const tablaUsuarios = $("#tablaUsuarios").DataTable({
+                destroy: true,
+                columnDefs: [
+                    { orderable: false, targets: 10 } // Columna de acciones no ordenable
+                ],
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    },
+                    emptyTable: "No hay datos disponibles",
+                    zeroRecords: "No se encontraron registros"
+                }
+            });
+
+            // DataList Member update
+            function updateMembersDatalist() {
+                const members = storage.getUsuarios();
+                const datalist = document.getElementById('membersList');
+                if (!datalist) {
+                    const dl = document.createElement('datalist');
+                    dl.id = 'membersList';
+                    document.body.appendChild(dl);
+                }
+                document.getElementById('membersList').innerHTML = members.map(u =>
+                    `<option value="${u.id}">${u.nombre} ${u.apellido} (DNI: ${u.dni})</option>`
+                ).join('');
+            }
+            updateMembersDatalist();
+
+            // Refresh datalist when users change
+            const originalAddUsuario = storage.addUsuario;
+            storage.addUsuario = function (u) {
+                const res = originalAddUsuario.call(this, u);
+                updateMembersDatalist();
+                return res;
+            };
+            const originalDeleteUsuario = storage.deleteUsuario;
+            storage.deleteUsuario = function (id) {
+                originalDeleteUsuario.call(this, id);
+                updateMembersDatalist();
+            };
+
+            // DataTables para pagos
+            const tablaPagos = $("#tablaPagos").DataTable({
+                destroy: true,
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                }
+            });
+
+            // DataTables para clases
+            const tablaClases = $("#tablaClases").DataTable({
+                destroy: true,
+                columnDefs: [
+                    { orderable: false, targets: 4 } // Columna de acciones no ordenable
+                ],
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+                }
+            });
+
+
+            // MOSTRAR USUARIOS
+            $('#btnMostrarUsuarios').click(() => {
+                const data = storage.getUsuarios();
+                tablaUsuarios.clear();
+                tablaUsuarios.rows.add(data.map(u => [
+                    u.id ?? '',
+                    u.nombre ?? '',
+                    u.apellido ?? '',
+                    u.telefono ?? '',
+                    u.email ?? '',
+                    u.fecha_vencimiento ?? '',
+                    u.dni ?? '',
+                    u.direccion ?? '',
+                    u.fecha_nacimiento ?? '',
+                    u.grupo_sanguineo ?? '',
+                    `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEditarUsuario(${u.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="eliminarUsuario(${u.id})"><i class="fas fa-trash"></i></button>`
+                ]));
+                tablaUsuarios.draw();
+                showContainer('tablaUsuariosContainer');
+            });
+
+            $('#formAgregarUsuario').submit(e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const body = Object.fromEntries(formData);
+
+                storage.addUsuario(body);
+
+                showAlert('Miembro agregado correctamente');
+                e.target.reset();
+                $('#btnMostrarUsuarios').click();
+                updateStats();
+            });
+
+            // PAGOS
+            $('#btnMostrarPagos').click(() => {
+                const data = storage.getPagos();
+                const usuarios = storage.getUsuarios();
+                tablaPagos.clear();
+                tablaPagos.rows.add(data.map(p => {
+                    const usuario = usuarios.find(u => u.id === p.usuario_id);
+                    const nombreCompleto = usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Usuario no encontrado';
+                    return [
+                        p.id,
+                        p.usuario_id,
+                        nombreCompleto,
+                        p.fecha,
+                        `$${p.monto}`,
+                        p.tipo,
+                        p.estado || 'N/A',
+                        p.observaciones || '',
+                        `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEditarPago(${p.id})"><i class="fas fa-edit"></i></button>
+                         <button class="btn btn-sm btn-outline-danger" onclick="eliminarPago(${p.id})"><i class="fas fa-trash"></i></button>`
+                    ];
+                }));
+                tablaPagos.draw();
+                showContainer('tablaPagosContainer');
+            });
+
+            $('#formRegistrarPago').submit(e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const body = Object.fromEntries(formData);
+                body.monto = parseFloat(body.monto);
+
+                const inputVal = $('#usuario_pago').val().trim();
+                const selectedId = $('#usuario_pago').data('selected-id');
+                let usuario = null;
+
+                // 1. Usar ID seleccionado de la lista (si existe)
+                if (selectedId) {
+                    usuario = storage.getUsuario(selectedId);
+                }
+
+                // 2. Si no, buscar por ID directo
+                if (!usuario) {
+                    usuario = storage.getUsuario(inputVal);
+                }
+
+                // 3. Buscar por DNI
+                if (!usuario) {
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u => u.dni && String(u.dni) === inputVal);
+                }
+
+                // 4. Buscar por Nombre/Apellido (fallback)
+                if (!usuario) {
+                    const busqueda = inputVal.toLowerCase();
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u =>
+                        (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                        (u.apellido && u.apellido.toLowerCase().includes(busqueda))
+                    );
+                }
+
+                if (!usuario) {
+                    showAlert('Usuario no encontrado (verifica DNI o ID)', 'danger');
+                    return;
+                }
+
+                // Usar el ID real del usuario encontrado
+                body.usuario_id = usuario.id;
+
+                // Lógica de Renovación Automática
+                let mensajeExtra = "";
+                const estadoLower = String(body.estado || '').toLowerCase();
+                const esPagado = !body.estado || estadoLower.includes('pagado');
+                if (body.tipo === 'Mensualidad' && esPagado) {
+                    // Determinar fecha base: si todavía no vence, se suma a la fecha actual de vencimiento.
+                    // Si ya venció, se suma a partir de HOY.
+                    let fechaBase = new Date(); // Hoy por defecto
+                    const hoy = new Date();
+
+                    if (usuario.fecha_vencimiento) {
+                        // Ajustar zona horaria añadiendo horas para evitar problemas de conversión
+                        const vencimientoActual = new Date(usuario.fecha_vencimiento + 'T12:00:00');
+                        if (vencimientoActual > hoy) {
+                            fechaBase = vencimientoActual;
+                        }
+                    }
+
+                    // Sumar 1 mes
+                    fechaBase.setMonth(fechaBase.getMonth() + 1);
+
+                    // Formatear a YYYY-MM-DD
+                    const nuevaFechaStr = fechaBase.toISOString().split('T')[0];
+
+                    // Actualizar usuario
+                    storage.updateUsuario(usuario.id, { fecha_vencimiento: nuevaFechaStr });
+                    mensajeExtra = `<br><strong>¡Membresía renovada hasta el ${nuevaFechaStr}!</strong>`;
+                }
+
+                storage.addPago(body);
+                showAlert(`Pago registrado correctamente.${mensajeExtra}`, 'success');
+                e.target.reset();
+                $('#btnMostrarPagos').click();
+                updateStats();
+            });
+
+            // EDICION PAGOS
+            window.abrirEditarPago = function (id) {
+                const pago = storage.getPago(id);
+                if (!pago) { showAlert('Pago no encontrado', 'danger'); return; }
+                $('#edit_pago_id').val(pago.id);
+                $('#edit_usuario_pago').val(pago.usuario_id);
+                $('#edit_fecha_pago').val(pago.fecha);
+                $('#edit_monto_pago').val(pago.monto);
+                $('#edit_tipo_pago').val(pago.tipo);
+                $('#edit_estado_pago').val(pago.estado || '');
+                $('#edit_observaciones_pago').val(pago.observaciones || '');
+                new bootstrap.Modal(document.getElementById('editarPagoModal')).show();
+            };
+
+            window.eliminarPago = function (id) {
+                if (!confirm('¿Seguro que deseas eliminar este pago?')) return;
+                storage.deletePago(id);
+                showAlert('Pago eliminado correctamente');
+                $('#btnMostrarPagos').click();
+                updateStats();
+            };
+
+            $(document).off('submit', '#formEditarPago').on('submit', '#formEditarPago', function (e) {
+                e.preventDefault();
+                const id = parseInt($('#edit_pago_id').val(), 10);
+                const data = {
+                    usuario_id: parseInt($('#edit_usuario_pago').val()),
+                    fecha: $('#edit_fecha_pago').val(),
+                    monto: parseFloat($('#edit_monto_pago').val()),
+                    tipo: $('#edit_tipo_pago').val(),
+                    estado: $('#edit_estado_pago').val(),
+                    observaciones: $('#edit_observaciones_pago').val()
+                };
+                storage.updatePago(id, data);
+                showAlert('Pago actualizado correctamente');
+                $('#btnMostrarPagos').click();
+                bootstrap.Modal.getInstance(document.getElementById('editarPagoModal')).hide();
+                updateStats();
+
+                if (window.__lastBuscarUserId && parseInt(window.__lastBuscarUserId) === parseInt(data.usuario_id)) {
+                    renderBuscarUsuario(parseInt(data.usuario_id));
+                }
+            });
+
+            function getUltimoPagoMensualidadUsuario(usuarioId) {
+                const pagos = storage.getPagos()
+                    .filter(p => parseInt(p.usuario_id) === parseInt(usuarioId))
+                    .filter(p => String(p.tipo || '').toLowerCase() === 'mensualidad')
+                    .filter(p => p.fecha)
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                return pagos.length ? pagos[0] : null;
+            }
+
+            function getEstadoPagoBadge(usuarioId) {
+                const ultimo = getUltimoPagoMensualidadUsuario(usuarioId);
+                if (!ultimo) {
+                    return {
+                        badgeClass: 'bg-secondary',
+                        texto: 'SIN PAGO'
+                    };
+                }
+
+                const estadoLower = String(ultimo.estado || '').toLowerCase();
+                const esPendiente = estadoLower.includes('pendiente');
+                if (esPendiente) {
+                    return {
+                        badgeClass: 'bg-warning text-dark',
+                        texto: 'PAGO PENDIENTE'
+                    };
+                }
+
+                return {
+                    badgeClass: 'bg-success',
+                    texto: 'PAGO OK'
+                };
+            }
+
+            function renderBuscarUsuario(usuarioId) {
+                const user = storage.getUsuario(usuarioId);
+                if (!user) {
+                    const container = document.getElementById('infoUsuario');
+                    if (container) container.innerHTML = '';
+                    showAlert('Usuario no encontrado', 'warning');
+                    return;
+                }
+
+                window.__lastBuscarUserId = user.id;
+
+                const container = document.getElementById('infoUsuario');
+                const clasesUsuario = storage.getClasesUsuario(user.id);
+                const clasesHtml = clasesUsuario.length > 0
+                    ? `<div class="mt-3"><h6>Actividades inscritas:</h6><ul>${clasesUsuario.map(c => `<li>${c.nombre} - ${c.horario}</li>`).join('')}</ul></div>`
+                    : '<div class="mt-3"><p class="text-muted">No está inscrito en ninguna actividad</p></div>';
+
+                const vencida = estaVencida(user.fecha_vencimiento);
+                const estadoClass = vencida ? 'text-danger fw-bold' : 'text-success fw-bold';
+                const estadoTexto = vencida ? '⚠️ VENCIDA' : '✅ ACTIVA';
+                const badgeClass = vencida ? 'bg-danger' : 'bg-success';
+                const estadoBadge = vencida ? 'VENCIDA' : 'ACTIVA';
+
+                const pagoBadge = getEstadoPagoBadge(user.id);
+
+                container.innerHTML = `
+                <div class="user-info-card ${vencida ? 'border-danger' : ''}">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="user-avatar me-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1">${user.nombre} ${user.apellido}</h4>
+                            <span class="badge bg-primary me-2">ID: ${user.id}</span>
+                            <span class="badge ${badgeClass} me-2">MEMBRESÍA ${estadoBadge}</span>
+                            <span class="badge ${pagoBadge.badgeClass}">${pagoBadge.texto}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-phone me-2"></i>Teléfono:</strong> ${user.telefono || 'No especificado'}</p>
+                            <p><strong><i class="fas fa-envelope me-2"></i>Email:</strong> ${user.email || 'No especificado'}</p>
+                            <p><strong><i class="fas fa-id-card me-2"></i>DNI:</strong> ${user.dni}</p>
+                            <p><strong><i class="fas fa-map-marker-alt me-2"></i>Dirección:</strong> ${user.direccion || 'No especificada'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-calendar me-2"></i>Vencimiento:</strong> <span class="${estadoClass}">${user.fecha_vencimiento} ${estadoTexto}</span></p>
+                            <p><strong><i class="fas fa-birthday-cake me-2"></i>Fecha de Nacimiento:</strong> ${user.fecha_nacimiento || 'No especificada'}</p>
+                            <p><strong><i class="fas fa-tint me-2"></i>Grupo Sanguíneo:</strong> ${user.grupo_sanguineo || 'No especificado'}</p>
+                        </div>
+                    </div>
+                    ${clasesHtml}
+                </div>
+            `;
+            }
+
+            // BUSCAR USUARIO
+            $('#formBuscarUsuario').submit(e => {
+                e.preventDefault();
+                const busqueda = document.getElementById('usuario_id_buscar').value.trim().toLowerCase();
+                const usuarios = storage.getUsuarios();
+
+                const user = usuarios.find(u =>
+                    u.id.toString() === busqueda ||
+                    (u.dni && u.dni.toString() === busqueda) ||
+                    (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                    (u.apellido && u.apellido.toLowerCase().includes(busqueda))
+                );
+
+                if (user) {
+                    renderBuscarUsuario(user.id);
+                } else {
+                    showAlert('Usuario no encontrado', 'warning');
+                }
+            });
+
+            // CLASES
+            $('#btnMostrarClases').click(() => {
+                const data = storage.getClases();
+                tablaClases.clear();
+                tablaClases.rows.add(data.map(c => [
+                    c.id,
+                    c.nombre,
+                    c.descripcion,
+                    c.horario,
+                    `<button class="btn btn-sm btn-warning" onclick="abrirEditarClase(${c.id})"><i class="fas fa-edit"></i> Editar Actividad</button>
+             <button class="btn btn-sm btn-danger" onclick="eliminarClase(${c.id})"><i class="fas fa-trash"></i> Eliminar</button>`
+                ]));
+                tablaClases.draw();
+                showContainer('tablaClasesContainer');
+            });
+
+            $('#formRegistrarClase').submit(e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const body = Object.fromEntries(formData);
+
+                storage.addClase(body);
+                showAlert('Actividad agregada correctamente');
+                e.target.reset();
+                populateClaseOptions();
+                $('#btnMostrarClases').click();
+                updateStats();
+            });
+
+            // INSCRIPCIONES
+            $('#formClasesUsuario').submit(e => {
+                e.preventDefault();
+                const inputVal = $('#usuario_clase').val().trim();
+                const selectedId = $('#usuario_clase').data('selected-id');
+                let usuario = null;
+
+                // 1. Usar ID seleccionado de la lista (si existe)
+                if (selectedId) {
+                    usuario = storage.getUsuario(selectedId);
+                }
+
+                // 2. Buscar por ID directo
+                if (!usuario) {
+                    usuario = storage.getUsuario(inputVal);
+                }
+
+                // 3. Buscar por DNI
+                if (!usuario) {
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u => u.dni && String(u.dni) === inputVal);
+                }
+
+                // 4. Buscar por Nombre/Apellido (fallback)
+                if (!usuario) {
+                    const busqueda = inputVal.toLowerCase();
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u => {
+                        const fullName = `${u.nombre} ${u.apellido}`.toLowerCase();
+                        return fullName.includes(busqueda) ||
+                            (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                            (u.apellido && u.apellido.toLowerCase().includes(busqueda));
+                    });
+                }
+
+                if (!usuario) {
+                    showAlert('Usuario no encontrado (verifica DNI o ID)', 'danger');
+                    return;
+                }
+
+                const usuario_id = usuario.id; // ID resuelto
+                const clase_id = parseInt(document.getElementById('nombre_clase_usuario').value);
+
+                // Obtener clase por ID
+                const clase = storage.getClases().find(c => c.id === clase_id);
+
+                if (!clase) {
+                    showAlert('Actividad no encontrada', 'danger');
+                    return;
+                }
+
+                // Verificar si ya está inscrito
+                const inscripciones = storage.getInscripciones();
+                const yaInscrito = inscripciones.find(i => i.usuario_id === usuario_id && i.clase_id === clase_id);
+
+                if (yaInscrito) {
+                    showAlert('El usuario ya está inscrito en esta actividad', 'warning');
+                    return;
+                }
+
+                storage.addInscripcion({
+                    usuario_id: usuario_id,
+                    clase_id: clase_id
+                });
+
+                showAlert('Usuario inscrito correctamente');
+                // Mostrar lista de clases del miembro actualizado
+                $('#btnMostrarClasesUsuario').click();
+                e.target.reset();
+                updateStats();
+            });
+
+            // MOSTRAR CLASES DE USUARIO
+            $('#btnMostrarClasesUsuario').click(() => {
+                const inputVal = document.getElementById('usuario_clase').value.trim();
+                const selectedId = $('#usuario_clase').data('selected-id');
+
+                if (!inputVal && !selectedId) {
+                    showAlert('Ingresa el ID, DNI o Nombre del usuario', 'warning');
+                    return;
+                }
+
+                let usuario = null;
+
+                if (selectedId) {
+                    usuario = storage.getUsuario(selectedId);
+                }
+
+                if (!usuario && inputVal) {
+                    usuario = storage.getUsuario(inputVal);
+                }
+
+                if (!usuario && inputVal) {
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u => u.dni && String(u.dni) === inputVal);
+                }
+
+                if (!usuario && inputVal) {
+                    const busqueda = inputVal.toLowerCase();
+                    const usuarios = storage.getUsuarios();
+                    usuario = usuarios.find(u => {
+                        const fullName = `${u.nombre} ${u.apellido}`.toLowerCase();
+                        return fullName.includes(busqueda) ||
+                            (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                            (u.apellido && u.apellido.toLowerCase().includes(busqueda));
+                    });
+                }
+
+                if (!usuario) {
+                    showAlert('Usuario no encontrado (verifica DNI o ID)', 'danger');
+                    return;
+                }
+
+                const usuario_id = usuario.id;
+
+                const clasesUsuario = storage.getClasesUsuario(usuario_id);
+                const container = document.getElementById('listaClasesUsuario');
+
+                if (clasesUsuario.length > 0) {
+                    container.innerHTML = clasesUsuario.map(c =>
+                        `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${c.nombre}</strong><br>
+                        <small class="text-muted">${c.descripcion} - ${c.horario}</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-primary rounded-pill me-2">Activo</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarInscripcion(${usuario_id}, ${c.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </li>`
+                    ).join('');
+                } else {
+                    container.innerHTML = '<li class="list-group-item text-muted">No está inscrito en ninguna actividad</li>';
+                }
+
+                showContainer('listaClasesUsuarioContainer');
+            });
+
+
+            // ====== Exportar / Importar ======>
+            $('#btnExportarDatos').click(() => {
+                // ==========================================
+                const data = storage.exportAllData();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `axionfit_backup_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+
+            $('#inputImportarDatos').on('change', function (e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        storage.importAllData(data);
+                        populateClaseOptions();
+                        updateStats();
+                        showAlert('Datos importados correctamente');
+                        // Refrescar tablas visibles
+                        if (!$('#tablaUsuariosContainer').hasClass('d-none')) $('#btnMostrarUsuarios').click();
+                        if (!$('#tablaPagosContainer').hasClass('d-none')) $('#btnMostrarPagos').click();
+                        if (!$('#tablaClasesContainer').hasClass('d-none')) $('#btnMostrarClases').click();
+                    } catch (err) {
+                        console.error(err);
+                        showAlert('Archivo JSON inválido', 'danger');
+                    }
+                };
+                reader.readAsText(file);
+                $(this).val('');
+            });
+        });
+
+        window.eliminarUsuario = function (id) {
+            storage.deleteUsuario(id);
+            showAlert('Miembro eliminado correctamente');
+            $('#btnMostrarUsuarios').click();
+            updateStats();
+        }
+
+        window.eliminarClase = function (id) {
+            if (!confirm('¿Seguro que deseas eliminar esta actividad?')) return;
+            storage.deleteClase(id);
+            showAlert('Actividad eliminada correctamente');
+            $('#btnMostrarClases').click();
+            updateStats();
+        }
+
+
+        // ======= EDICIÓN DE MIEMBROS =======
+        if (!GymStorage.prototype.updateUsuario) {
+            GymStorage.prototype.updateUsuario = function (id, data) {
+                const usuarios = this.getUsuarios();
+                const idx = usuarios.findIndex(u => parseInt(u.id) === parseInt(id));
+                if (idx > -1) {
+                    usuarios[idx] = { ...usuarios[idx], ...data, id: parseInt(id, 10) };
+                    localStorage.setItem('gym_usuarios', JSON.stringify(usuarios));
+                }
+            };
+        }
+
+        window.abrirEditarUsuario = function (id) {
+            const usuario = storage.getUsuario(id);
+            if (!usuario) { showAlert('Usuario no encontrado', 'danger'); return; }
+            // Rellenar campos del modal
+            $('#edit_usuario_id').val(usuario.id);
+            $('#edit_nombre').val(usuario.nombre);
+            $('#edit_apellido').val(usuario.apellido);
+            $('#edit_telefono').val(usuario.telefono);
+            $('#edit_email').val(usuario.email);
+            $('#edit_fecha_vencimiento').val(usuario.fecha_vencimiento);
+            $('#edit_dni').val(usuario.dni);
+            new bootstrap.Modal(document.getElementById('modalEditarUsuario')).show();
+        };
+
+        $(document).off('submit', '#formEditarUsuario').on('submit', '#formEditarUsuario', function (e) {
+            e.preventDefault();
+            const id = parseInt($('#edit_usuario_id').val(), 10);
+            const data = {
+                nombre: $('#edit_nombre').val(),
+                apellido: $('#edit_apellido').val(),
+                telefono: $('#edit_telefono').val(),
+                email: $('#edit_email').val(),
+                fecha_vencimiento: $('#edit_fecha_vencimiento').val(),
+                dni: $('#edit_dni').val()
+            };
+            storage.updateUsuario(id, data);
+            showAlert('Miembro actualizado correctamente');
+            const tablaUsuarios = $("#tablaUsuarios").DataTable();
+            tablaUsuarios.clear();
+            tablaUsuarios.rows.add(storage.getUsuarios().map(u => [
+                u.id ?? '',
+                u.nombre ?? '',
+                u.apellido ?? '',
+                u.telefono ?? '',
+                u.email ?? '',
+                u.fecha_vencimiento ?? '',
+                u.dni ?? '',
+                `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEditarUsuario(${u.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="eliminarUsuario(${u.id})"><i class="fas fa-trash"></i></button>`
+            ]));
+            tablaUsuarios.draw();
+            bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario')).hide();
+            updateStats();
+        });
+        // ======= FIN EDICIÓN MIEMBROS =======
+
+        // ======= EDICIÓN DE CLASES =======
+        window.abrirEditarClase = function (id) {
+            const clase = storage.getClase(id);
+            if (!clase) { showAlert('Actividad no encontrada', 'danger'); return; }
+            // Rellenar campos del modal
+            $('#editar_id_clase').val(clase.id);
+            $('#editar_nombre_clase').val(clase.nombre);
+            $('#editar_descripcion_clase').val(clase.descripcion);
+            $('#editar_horario_clase').val(clase.horario);
+            new bootstrap.Modal(document.getElementById('modalEditarClase')).show();
+        };
+
+        $(document).off('submit', '#formEditarClase').on('submit', '#formEditarClase', function (e) {
+            e.preventDefault();
+            const id = parseInt($('#editar_id_clase').val(), 10);
+            const data = {
+                nombre: $('#editar_nombre_clase').val(),
+                descripcion: $('#editar_descripcion_clase').val(),
+                horario: $('#editar_horario_clase').val()
+            };
+            storage.updateClase(id, data);
+            showAlert('Actividad actualizada correctamente');
+
+            const tablaClases = $("#tablaClases").DataTable();
+            tablaClases.clear();
+            tablaClases.rows.add(storage.getClases().map(c => [
+                c.id,
+                c.nombre,
+                c.descripcion,
+                c.horario,
+                `<button class="btn btn-sm btn-warning" onclick="abrirEditarClase(${c.id})"><i class="fas fa-edit"></i> Editar Actividad</button>
+         <button class="btn btn-sm btn-danger" onclick="eliminarClase(${c.id})"><i class="fas fa-trash"></i> Eliminar</button>`
+            ]));
+            tablaClases.draw();
+
+            bootstrap.Modal.getInstance(document.getElementById('modalEditarClase')).hide();
+            updateStats();
+        });
+        // ======= FIN EDICIÓN CLASES =======
+
+        // ========== INGRESOS (registro de entradas) ==========
+        $('#ingresoContainer').addClass('d-none');
+
+        function showIngresoButton(uid) {
+            $('#ingresoContainer').removeClass('d-none');
+            $('#btnRegistrarIngreso').data('uid', uid);
+        }
+
+        if (!GymStorage.prototype.getIngresos) {
+            GymStorage.prototype.getIngresos = function () {
+                return JSON.parse(localStorage.getItem('gym_ingresos') || '[]');
+            };
+            GymStorage.prototype.addIngreso = function (ing) {
+                const arr = this.getIngresos();
+                ing.id = this.getNextId();
+                arr.push(ing);
+                localStorage.setItem('gym_ingresos', JSON.stringify(arr));
+            };
+        }
+
+        // Función para verificar si una membresía está vencida
+        function estaVencida(fechaVencimiento) {
+            if (!fechaVencimiento || String(fechaVencimiento).trim() === '') return true;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const vencimiento = new Date(fechaVencimiento);
+            if (Number.isNaN(vencimiento.getTime())) return true;
+            vencimiento.setHours(0, 0, 0, 0);
+            return vencimiento < hoy;
+        }
+
+        // Función para formatear fecha en español
+        function formatearFecha(fecha) {
+            return new Date(fecha).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        $('#btnRegistrarIngreso').on('click', function () {
+            const uid = $(this).data('uid');
+            const usuario = storage.getUsuario(uid);
+            if (!usuario) {
+                showAlert('Usuario no encontrado', 'danger');
+                return;
+            }
+
+            // Verificar si la membresía está vencida
+            if (estaVencida(usuario.fecha_vencimiento)) {
+                const mensaje = `⚠️ ATENCIÓN: La membresía de ${usuario.nombre} ${usuario.apellido} está vencida desde el ${formatearFecha(usuario.fecha_vencimiento)}.\n\n¿Desea permitir el ingreso de manera excepcional?`;
+
+                if (confirm(mensaje)) {
+                    storage.addIngreso({
+                        usuario_id: uid,
+                        fecha: new Date().toISOString(),
+                        excepcional: true
+                    });
+                    showAlert('⚠️ Ingreso EXCEPCIONAL registrado (Membresía vencida)', 'warning');
+                } else {
+                    showAlert('Ingreso cancelado - Membresía vencida', 'danger');
+                }
+                return;
+            }
+
+            // Si no está vencida, registrar ingreso normalmente
+            storage.addIngreso({ usuario_id: uid, fecha: new Date().toISOString() });
+            showAlert('✅ Ingreso registrado correctamente', 'success');
+        });
+
+        let tablaIngresos;
+        $('#btnMostrarIngresos').click(function () {
+            if (!tablaIngresos) {
+                tablaIngresos = $('#tablaIngresos').DataTable({
+                    destroy: true,
+                    language: { search: 'Buscar:', lengthMenu: 'Mostrar _MENU_ registros', info: 'Mostrando _START_ a _END_ de _TOTAL_ registros', paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' }, emptyTable: 'Sin ingresos registrados', zeroRecords: 'Sin coincidencias' }
+                });
+            }
+            const ingresos = storage.getIngresos();
+            const pagos = storage.getPagos();
+            tablaIngresos.clear();
+            tablaIngresos.rows.add(ingresos.map(i => {
+                const pagosUsuario = pagos
+                    .filter(p => parseInt(p.usuario_id) === parseInt(i.usuario_id))
+                    .filter(p => p.fecha)
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                const estado = pagosUsuario.length ? (pagosUsuario[0].estado || 'N/A') : 'Sin pagos';
+                return [i.id, i.usuario_id, new Date(i.fecha).toLocaleString('es-ES'), estado];
+            }));
+            tablaIngresos.draw();
+            new bootstrap.Modal(document.getElementById('historialIngresosModal')).show();
+        });
+
+        window.eliminarInscripcion = function (uid, cid) {
+            if (!confirm('¿Seguro que deseas eliminar esta inscripción?')) return;
+            storage.deleteInscripcionByUserAndClass(uid, cid);
+            showAlert('Inscripción eliminada correctamente');
+            $('#btnMostrarClasesUsuario').click();
+            updateStats();
+        }
+
+        // =====================================================
+        // PROTECCIÓN INGRESOS MES
+        // =====================================================
+        // =====================================================
+        // PROTECCIÓN INGRESOS MES
+        // =====================================================
+        $('#btnIngresosMes').click(function (e) {
+            e.preventDefault();
+
+            // SI ES PREMIUM, ENTRA DIRECTO (Bypass Password)
+            window.open('ingresos_mes.html?auth=verified', '_blank');
+        });
+
+        // =====================================================
+        // MERCADO PAGO INTEGRATION
+        // =====================================================
+        window.openSupportModal = function () {
+            new bootstrap.Modal(document.getElementById('modalSupport')).show();
+        };
+        // =====================================================
+        // AUTOCOMPLETADO PAGOS (Nuevo)
+        // =====================================================
+        $(document).on('input', '#usuario_pago', function () {
+            const busqueda = $(this).val().toLowerCase().trim();
+            const suggestionsList = $('#listaSugerenciasPagos');
+
+            // Limpiar ID si edita
+            $(this).removeData('selected-id');
+
+            suggestionsList.empty().addClass('d-none');
+
+            // Necesitamos al menos 2 caracteres o ser un número
+            if (busqueda.length < 2 && isNaN(busqueda)) return;
+
+            const usuarios = storage.getUsuarios();
+            const sugerencias = usuarios.filter(u =>
+                (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                (u.apellido && u.apellido.toLowerCase().includes(busqueda)) ||
+                (u.dni && String(u.dni).includes(busqueda)) ||
+                (String(u.id).includes(busqueda))
+            );
+
+            if (sugerencias.length > 0) {
+                sugerencias.slice(0, 10).forEach(u => {
+                    const li = $(`<li>
+                        <strong>${u.nombre} ${u.apellido}</strong><br>
+                        <small class="text-muted">DNI: ${u.dni || 'N/A'} - ID: ${u.id}</small>
+                    </li>`);
+
+                    li.on('click', function () {
+                        $('#usuario_pago').val(`${u.nombre} ${u.apellido}`);
+                        $('#usuario_pago').data('selected-id', u.id);
+                        suggestionsList.addClass('d-none');
+                    });
+
+                    suggestionsList.append(li);
+                });
+                suggestionsList.removeClass('d-none');
+            }
+        });
+
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#usuario_pago').length && !$(e.target).closest('#listaSugerenciasPagos').length) {
+                $('#listaSugerenciasPagos').addClass('d-none');
+            }
+        });
+
+        // =====================================================
+        // AUTOCOMPLETADO GENÉRICO (Clases, Buscar, Pagos)
+        // =====================================================
+        function setupAutocomplete(inputId, listId) {
+            $(document).off('input', inputId).on('input', inputId, function () {
+                const busqueda = $(this).val().toLowerCase().trim();
+                const suggestionsList = $(listId);
+
+                // Limpiar ID si edita
+                $(this).removeData('selected-id');
+
+                suggestionsList.empty().addClass('d-none');
+
+                // Necesitamos al menos 1 caracter
+                if (busqueda.length < 1) return;
+
+                const usuarios = storage.getUsuarios();
+                const sugerencias = usuarios.filter(u =>
+                    (u.nombre && u.nombre.toLowerCase().includes(busqueda)) ||
+                    (u.apellido && u.apellido.toLowerCase().includes(busqueda)) ||
+                    (u.dni && String(u.dni).includes(busqueda)) ||
+                    (String(u.id).includes(busqueda))
+                );
+
+                if (sugerencias.length > 0) {
+                    sugerencias.slice(0, 10).forEach(u => {
+                        const li = $(`<li>
+                        <strong>${u.nombre} ${u.apellido}</strong><br>
+                        <small class="text-muted">DNI: ${u.dni || 'N/A'} - ID: ${u.id}</small>
+                    </li>`);
+
+                        li.on('click', function () {
+                            if (inputId === '#usuario_id_buscar') {
+                                $(inputId).val(u.id); // Usar ID para búsqueda exacta
+                                $(inputId).data('selected-id', u.id);
+                                setTimeout(() => $('#formBuscarUsuario').submit(), 100);
+                            } else {
+                                $(inputId).val(`${u.nombre} ${u.apellido}`);
+                                $(inputId).data('selected-id', u.id);
+                            }
+                            suggestionsList.addClass('d-none');
+                        });
+
+                        suggestionsList.append(li);
+                    });
+                    suggestionsList.removeClass('d-none');
+                }
+            });
+
+            // Cerrar al clickear fuera
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest(inputId).length && !$(e.target).closest(listId).length) {
+                    $(listId).addClass('d-none');
+                }
+            });
+        }
+
+        // Inicializar autocompletados
+        setupAutocomplete('#usuario_clase', '#listaSugerenciasClases');
+        setupAutocomplete('#usuario_id_buscar', '#listaSugerenciasBuscar');
+        setupAutocomplete('#usuario_pago', '#listaSugerenciasPagos');
+    </script>
+
+    <!-- Modal Editar Miembro -->
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarUsuario">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_usuario_id">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="edit_nombre" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Apellido</label>
+                            <input type="text" id="edit_apellido" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" id="edit_telefono" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="edit_email" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Vencimiento</label>
+                            <input type="date" id="edit_fecha_vencimiento" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">DNI</label>
+                            <input type="text" id="edit_dni" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary-custom btn-custom">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Clase -->
+    <div class="modal fade" id="modalEditarClase" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Actividad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarClase">
+                    <div class="modal-body">
+                        <input type="hidden" id="editar_id_clase">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="editar_nombre_clase" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <input type="text" id="editar_descripcion_clase" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Horario</label>
+                            <input type="text" id="editar_horario_clase" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary-custom btn-custom">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Historial Ingresos -->
+    <div class="modal fade" id="historialIngresosModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-door-open me-2"></i>Historial de Ingresos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="tablaIngresos" class="table table-custom w-100">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Miembro ID</th>
+                                    <th>Fecha/Hora</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica adicional si es necesaria
+    </script>
+
+
+    <!-- Modal para Editar Pago -->
+    <div class="modal fade" id="editarPagoModal" tabindex="-1" aria-labelledby="editarPagoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarPagoModalLabel">Editar Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarPago">
+                        <input type="hidden" id="edit_pago_id">
+                        <div class="mb-3">
+                            <label for="edit_usuario_pago" class="form-label">ID del Miembro</label>
+                            <input type="text" class="form-control" id="edit_usuario_pago" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_fecha_pago" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="edit_fecha_pago" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_monto_pago" class="form-label">Monto</label>
+                            <input type="number" step="0.01" class="form-control" id="edit_monto_pago" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_tipo_pago" class="form-label">Tipo de Pago</label>
+                            <select class="form-control" id="edit_tipo_pago" required>
+                                <option value="Mensualidad">Mensualidad</option>
+                                <option value="Inscripción">Inscripción</option>
+                                <option value="Personal Training">Personal Training</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_estado_pago" class="form-label">Estado</label>
+                            <select class="form-control" id="edit_estado_pago" required>
+                                <option value="Pagado (Completo)">Pagado (Completo)</option>
+                                <option value="Pendiente (Saldo / Fiado)">Pendiente (Saldo / Fiado)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_observaciones_pago" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="edit_observaciones_pago" rows="2"
+                                placeholder="Ej: Restan $5000"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom">Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Soporte -->
+    <div class="modal fade" id="modalSupport" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-white"
+                style="background: linear-gradient(135deg, #1a1d29 0%, #2d3748 100%); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title"><i class="fas fa-headset text-info me-2"></i>Centro de Soporte</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <p class="mb-4">¿Tenés alguna sugerencia o problema? ¡Contáctame directamente!</p>
+
+                    <div class="d-grid gap-3 mb-4">
+                        <a href="https://wa.me/5492664024390" target="_blank" class="btn btn-success btn-lg">
+                            <i class="fab fa-whatsapp me-2"></i>Chat por WhatsApp
+                        </a>
+                    </div>
+
+                    <div class="text-start border-top border-secondary pt-3">
+                        <p class="small text-info mb-2"><i class="fas fa-envelope me-1"></i>O envíanos un mensaje:</p>
+                        <form action="https://formspree.io/f/mvgzqkpv" method="POST" target="_blank">
+                            <div class="mb-2">
+                                <input type="email" name="email"
+                                    class="form-control form-control-sm bg-dark text-light border-secondary"
+                                    placeholder="Tu Email para responderte" required>
+                            </div>
+                            <div class="mb-2">
+                                <textarea name="message"
+                                    class="form-control form-control-sm bg-dark text-light border-secondary" rows="3"
+                                    placeholder="Escribe tu consulta o sugerencia aquí..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-outline-light btn-sm w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Correo
+                            </button>
+                        </form>
+                    </div>
+
+                    <p class="mt-4 text-muted small">
+                        Universo gym v4.5 • Comprado en Mercado Libre
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <datalist id="membersList"></datalist>
+</body>
+
+</html>
