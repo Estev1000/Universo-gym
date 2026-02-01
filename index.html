@@ -488,7 +488,7 @@
                     <div class="form-text text-center mt-2">
                         <small>
                             <span class="d-block text-muted">Credenciales de acceso:</span>
-                            Dueño: <strong>Universo gym</strong> / <strong>Gonzalo Ariel Torales</strong><br>
+                            Dueño: <strong>xxxxx</strong> / <strong>xxxxxxxx</strong><br>
                             Empleado: <strong>empleado</strong> / <strong>(sin contraseña)</strong>
                         </small>
                         <hr>
@@ -552,7 +552,7 @@
                         <div class="stat-label">Miembros Activos</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 d-none">
+                <div class="col-lg-3 col-md-6">
                     <div class="stat-card">
                         <div class="stat-icon" style="background: var(--success-gradient);">
                             <i class="fas fa-dollar-sign"></i>
@@ -629,7 +629,7 @@
             <!-- Visible solo para ADMIN / DUEÑO -->
             <li class="nav-item d-none" role="presentation" id="liIngresosMes">
                 <a class="nav-link" href="ingresos_mes.html" target="_blank" id="btnIngresosMes" role="tab">
-                    <i class="fas fa-sack-dollar me-2"></i>Ingresos Mes
+                    <i class="fas fa-sack-dollar me-2"></i>Ingresos Totales
                 </a>
             </li>
         </ul>
@@ -1457,7 +1457,7 @@
                 const pass = $('#login_pass').val().trim();
 
                 // 1. LOGIN DE DUEÑO (ADMIN)
-                if (user === 'gimnasiocff' && pass === 'lorenzo') {
+                if ((user === 'gimnasiocff' && pass === 'lorenzo') || (user.toLowerCase() === 'gonzalo' && pass === 'gimnasio2026')) {
                     localStorage.setItem('gym_loggedIn', 'true');
                     localStorage.setItem('gym_role', 'owner');
                     hideLogin();
