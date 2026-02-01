@@ -1209,7 +1209,8 @@
                 if (!pago || pago.tipo !== 'Mensualidad') return false;
                 if (!pago.fecha) return false;
                 if (!pago.estado) return true;
-                return String(pago.estado).toLowerCase().includes('pagado');
+                const estadoLower = String(pago.estado).toLowerCase();
+                return estadoLower.includes('pagado') || estadoLower.includes('pendiente');
             }
 
             recalcularVencimientoUsuario(usuarioId) {
