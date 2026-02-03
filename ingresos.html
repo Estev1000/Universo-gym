@@ -210,20 +210,34 @@
         }
         const storage = new GymStorage();
 
+        // Función auxiliar para parsear fecha localmente
+        function parseLocalYMD(dateStr) {
+            if (!dateStr || String(dateStr).trim() === '') return null;
+            // Fix: Parse YYYY-MM-DD manually to avoid UTC conversion issues
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                return new Date(y, m - 1, d);
+            }
+            const d = new Date(dateStr);
+            if (Number.isNaN(d.getTime())) return null;
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
         // Función para verificar si una membresía está vencida
         function estaVencida(fechaVencimiento) {
-            if (!fechaVencimiento || String(fechaVencimiento).trim() === '') return true;
+            const vencimiento = parseLocalYMD(fechaVencimiento);
+            if (!vencimiento) return true;
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
-            const vencimiento = new Date(fechaVencimiento);
-            if (Number.isNaN(vencimiento.getTime())) return true;
-            vencimiento.setHours(0, 0, 0, 0);
             return vencimiento < hoy;
         }
 
         // Función para formatear fecha en español
         function formatearFecha(fecha) {
-            return new Date(fecha).toLocaleDateString('es-ES', {
+            const d = parseLocalYMD(fecha);
+            if (!d) return '';
+            return d.toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
