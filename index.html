@@ -2141,6 +2141,9 @@
             $('#edit_email').val(usuario.email);
             $('#edit_fecha_vencimiento').val(usuario.fecha_vencimiento);
             $('#edit_dni').val(usuario.dni);
+            $('#edit_direccion').val(usuario.direccion || '');
+            $('#edit_fecha_nacimiento').val(usuario.fecha_nacimiento || '');
+            $('#edit_grupo_sanguineo').val(usuario.grupo_sanguineo || '');
             new bootstrap.Modal(document.getElementById('modalEditarUsuario')).show();
         };
 
@@ -2153,7 +2156,10 @@
                 telefono: $('#edit_telefono').val(),
                 email: $('#edit_email').val(),
                 fecha_vencimiento: $('#edit_fecha_vencimiento').val(),
-                dni: $('#edit_dni').val()
+                dni: $('#edit_dni').val(),
+                direccion: $('#edit_direccion').val(),
+                fecha_nacimiento: $('#edit_fecha_nacimiento').val(),
+                grupo_sanguineo: $('#edit_grupo_sanguineo').val()
             };
             storage.updateUsuario(id, data);
             showAlert('Miembro actualizado correctamente');
@@ -2271,7 +2277,8 @@
                     storage.addIngreso({
                         usuario_id: uid,
                         fecha: new Date().toISOString(),
-                        excepcional: true
+                        excepcional: true,
+                        actividad: storage.getClasesUsuario(uid).map(c => c.nombre).join(', ') || 'Sin Actividad'
                     });
                     showAlert('⚠️ Ingreso EXCEPCIONAL registrado (Membresía vencida)', 'warning');
                 } else {
@@ -2281,7 +2288,14 @@
             }
 
             // Si no está vencida, registrar ingreso normalmente
-            storage.addIngreso({ usuario_id: uid, fecha: new Date().toISOString() });
+            const clasesUsuario = storage.getClasesUsuario(uid);
+            const actividad = clasesUsuario.map(c => c.nombre).join(', ') || 'Sin Actividad';
+
+            storage.addIngreso({
+                usuario_id: uid,
+                fecha: new Date().toISOString(),
+                actividad: actividad
+            });
             showAlert('✅ Ingreso registrado correctamente', 'success');
         });
 
@@ -2302,7 +2316,7 @@
                     .filter(p => p.fecha)
                     .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
                 const estado = pagosUsuario.length ? (pagosUsuario[0].estado || 'N/A') : 'Sin pagos';
-                return [i.id, i.usuario_id, new Date(i.fecha).toLocaleString('es-ES'), estado];
+                return [i.id, i.usuario_id, new Date(i.fecha).toLocaleString('es-ES'), estado, i.actividad || 'N/A'];
             }));
             tablaIngresos.draw();
             new bootstrap.Modal(document.getElementById('historialIngresosModal')).show();
@@ -2481,6 +2495,28 @@
                             <label class="form-label">DNI</label>
                             <input type="text" id="edit_dni" class="form-control">
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" id="edit_direccion" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" id="edit_fecha_nacimiento" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Grupo Sanguíneo</label>
+                            <select id="edit_grupo_sanguineo" class="form-control">
+                                <option value="">Seleccionar...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary-custom btn-custom">Guardar Cambios</button>
@@ -2539,6 +2575,7 @@
                                     <th>Miembro ID</th>
                                     <th>Fecha/Hora</th>
                                     <th>Estado</th>
+                                    <th>Actividad</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

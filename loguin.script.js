@@ -25,6 +25,23 @@ function getNextId() {
     return nextId;
 }
 
+function getClases() {
+    return JSON.parse(localStorage.getItem('gym_clases') || '[]');
+}
+
+function getInscripciones() {
+    return JSON.parse(localStorage.getItem('gym_inscripciones') || '[]');
+}
+
+function getClasesUsuario(userId) {
+    const inscripciones = getInscripciones();
+    const clases = getClases();
+    return inscripciones
+        .filter(i => i.usuario_id === parseInt(userId))
+        .map(i => clases.find(c => c.id === i.clase_id))
+        .filter(c => c);
+}
+
 function isFechaVencimientoValidaYVigente(fechaVencimientoStr) {
     const fechaVencimiento = parseDateOnly(fechaVencimientoStr);
     if (!fechaVencimiento) return false;
@@ -205,33 +222,28 @@ function submitLogin() {
                 playSound('error');
                 startBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Denegado';
             } else {
-                if (ultimoEsPendiente) {
-                    const ingresos = getIngresos();
-                    const newIngreso = {
-                        id: getNextId(),
-                        usuario_id: user.id,
-                        fecha: new Date().toISOString()
-                    };
-                    ingresos.push(newIngreso);
-                    saveIngresos(ingresos);
+                const clasesUsuario = getClasesUsuario(user.id);
+                const actividad = clasesUsuario.map(c => c.nombre).join(', ') || 'Sin Actividad';
 
-                    showMessage(`¡Bienvenido/a ${user.nombre}! Acceso Permitido (PAGO PENDIENTE).`, 'warning');
-                    playSound('warning');
-                    startBtn.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Pendiente';
-                    return;
-                }
                 const ingresos = getIngresos();
                 const newIngreso = {
                     id: getNextId(),
                     usuario_id: user.id,
-                    fecha: new Date().toISOString()
+                    fecha: new Date().toISOString(),
+                    actividad: actividad
                 };
                 ingresos.push(newIngreso);
                 saveIngresos(ingresos);
 
-                showMessage(`¡Bienvenido/a ${user.nombre}! Acceso Permitido.`, 'success');
-                playSound('success');
-                startBtn.innerHTML = '<i class="fa-solid fa-check"></i> Adelante';
+                if (ultimoEsPendiente) {
+                    showMessage(`¡Bienvenido/a ${user.nombre}! Acceso Permitido (PAGO PENDIENTE).`, 'warning');
+                    playSound('warning');
+                    startBtn.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Pendiente';
+                } else {
+                    showMessage(`¡Bienvenido/a ${user.nombre}! Acceso Permitido.`, 'success');
+                    playSound('success');
+                    startBtn.innerHTML = '<i class="fa-solid fa-check"></i> Adelante';
+                }
             }
 
         } else {
