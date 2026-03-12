@@ -491,11 +491,6 @@
                             Dueño: <strong>xxxxx</strong> / <strong>xxxxxxxx</strong><br>
                             Empleado: <strong>empleado</strong> / <strong>(sin contraseña)</strong>
                         </small>
-                        <hr>
-                        <button type="button" class="btn btn-link btn-sm text-decoration-none"
-                            onclick="document.getElementById('loginContainer').classList.add('d-none'); document.getElementById('manual-tab').click();">
-                            <i class="fas fa-book-open me-1"></i>¿Cómo usar el sistema? Ver Manual
-                        </button>
                     </div>
                 </div>
             </form>
@@ -967,17 +962,20 @@
                                 </div>
                             </div>
 
-                            <div class="manual-section mb-5" id="m-pasos">
-                                <h4 class="text-primary border-bottom pb-2"><i class="fas fa-rocket me-2"></i>1.
-                                    Primeros Pasos</h4>
-                                <p>Al abrir el sistema (<code>index.html</code>), verás una interfaz moderna y limpia
-                                    diseñada para la eficiencia.</p>
-                                <ul>
-                                    <li><strong>Navegación:</strong> Usa las pestañas superiores (Miembros, Pagos,
-                                        Buscar, Actividades) para moverte por las distintas secciones.</li>
-                                    <li><strong>Acceso Rápido:</strong> En la barra superior tienes botones para
-                                        <strong>"Modo Acceso"</strong> (para que los socios pongan su DNI) e
-                                        <strong>"Ingresos"</strong> (para ver quién entra).
+                            <div id="m-pasos" class="manual-section mb-5">
+                                <h4><span class="section-icon"><i class="fas fa-rocket"></i></span> 1. Primeros Pasos
+                                </h4>
+                                <p>Al abrir el sistema, verás una interfaz moderna y limpia diseñada
+                                    para la eficiencia. La navegación principal se encuentra en la parte superior.</p>
+                                <ul class="list-group list-group-flush mb-4">
+                                    <li class="list-group-item bg-transparent"><i
+                                            class="fas fa-check text-success me-2"></i>
+                                        <strong>Navegación:</strong> Usa las pestañas superiores para moverte entre
+                                        secciones.
+                                    </li>
+                                    <li class="list-group-item bg-transparent"><i
+                                            class="fas fa-check text-success me-2"></i>
+                                        <strong>Acceso Rápido:</strong> Botones rápidos para "Modo Acceso" e "Ingresos".
                                     </li>
                                 </ul>
                             </div>
@@ -1001,6 +999,19 @@
                                                 actual.</small>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div id="m-miembros" class="manual-section mb-5">
+                                <h4><span class="section-icon"><i class="fas fa-users-cog"></i></span> 3. Miembros</h4>
+                                <p>Para registrar un socio, ve a "Miembros" y completa los datos (Nombre, DNI,
+                                    Vencimiento). El
+                                    sistema genera un ID automático.</p>
+                                <div class="alert alert-info border-0 shadow-sm">
+                                    <i class="fas fa-lightbulb me-2"></i> <strong>Tip sobre el Vencimiento:</strong> Usa
+                                    esta
+                                    fecha para cargar socios que ya tienen tiempo pago a favor o para <strong>clientes
+                                        temporales (vacaciones)</strong> que solo estarán por un tiempo determinado.
                                 </div>
                             </div>
 
